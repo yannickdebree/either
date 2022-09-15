@@ -1,15 +1,3 @@
-class EitherResult<L = null, R = null> {
-  constructor(public readonly left: L, public readonly right: R) {}
-
-  isLeft() {
-    return !!this.left;
-  }
-
-  isRight() {
-    return !!this.right;
-  }
-}
-
 type LeftDirection<V> = {
   leftValue: V;
 };
@@ -18,24 +6,40 @@ type RightDirection<V> = {
   rightValue: V;
 };
 
-export function either<L, R>(
-  runner: () => LeftDirection<L> | RightDirection<R>
-): EitherResult<L, R> {
-  const result = runner();
-  if (result.hasOwnProperty('leftValue')) {
-    return new EitherResult((result as LeftDirection<L>).leftValue, null);
-  }
-  return new EitherResult(null, (result as RightDirection<R>).rightValue);
-}
-
-export function left<V>(leftValue: V): LeftDirection<V> {
+function left<V>(leftValue: V): LeftDirection<V> {
   return {
     leftValue,
   };
 }
 
-export function right<V>(rightValue: V): RightDirection<V> {
+function right<V>(rightValue: V): RightDirection<V> {
   return {
     rightValue,
   };
+}
+
+export class Either<L, R> {
+  public readonly left: L | null;
+  public readonly right: R | null;
+
+  constructor(
+    runner: (
+      left: (value: L) => LeftDirection<L>,
+      right: (value: R) => RightDirection<R>
+    ) => LeftDirection<L> | RightDirection<R>
+  ) {
+    const result = runner(left, right);
+    if (result.hasOwnProperty('leftValue')) {
+      this.left = (result as LeftDirection<L>).leftValue;
+    }
+    this.right = (result as RightDirection<R>).rightValue;
+  }
+
+  isLeft() {
+    return !!this.left;
+  }
+
+  isRight() {
+    return !!this.right;
+  }
 }

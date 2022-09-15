@@ -1,25 +1,21 @@
-import { either, left, right } from './lib';
+import { Either } from './lib';
 
 function doSomething(input: number) {
-  return either(() => {
+  console.log('Running for ', input, '...');
+  const either = new Either((left, right) => {
     if (input === 0) {
       return right('This is an error !');
     }
     return left(input);
   });
-}
-
-function runSomething(input: number) {
-  const eitherResult = doSomething(input);
-  const { left: result, right: errorMessage } = eitherResult;
-  if (eitherResult.isRight()) {
-    console.log(errorMessage);
+  if (either.isRight()) {
+    console.log(either.right);
     return;
   }
-  console.log('The result is : ', result);
+  console.log('The result is : ', either.right);
 }
 
 export function main() {
-  runSomething(1);
-  runSomething(0);
+  doSomething(1);
+  doSomething(0);
 }
