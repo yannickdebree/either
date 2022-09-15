@@ -40,8 +40,22 @@ class Either<L, R> {
     return !!this.left;
   }
 
+  onLeft(callback: <V>(value: V) => R) {
+    if (this.isLeft()) {
+      callback(this.left);
+    }
+    return this;
+  }
+
   isRight() {
     return !!this.right;
+  }
+
+  onRight(callback: <V>(value: V) => R) {
+    if (this.isRight()) {
+      callback(this.right);
+    }
+    return this;
   }
 }
 
