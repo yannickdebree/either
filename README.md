@@ -1,3 +1,3 @@
-# typescript-itabaf
+# Either.ts
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/typescript-itabaf)
+Implementation of the Either monad in Typescript.

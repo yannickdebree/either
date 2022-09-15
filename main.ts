@@ -1,26 +1,25 @@
-function wrap<L, R>(cb: () => { leftValue: L } | { rightValue: R }) {
-  const a = cb();
-  if()
-}
+import { either, left, right } from './lib';
 
 function doSomething(input: number) {
-  return wrap(() => {
+  return either(() => {
     if (input === 0) {
-      return {
-        leftValue: 'Error !',
-      };
+      return right('This is an error !');
     }
-    return {
-      rightValue: true,
-    };
+    return left(input);
   });
 }
 
 function runSomething(input: number) {
-  const result = doSomething(input);
+  const eitherResult = doSomething(input);
+  const { left: result, right: errorMessage } = eitherResult;
+  if (eitherResult.isRight()) {
+    console.log(errorMessage);
+    return;
+  }
+  console.log('The result is : ', result);
 }
 
 export function main() {
-  runSomething(0);
   runSomething(1);
+  runSomething(0);
 }
