@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  either:
+    image: node:16
+    user: node
+    working_dir: /usr/lib/either
+    volumes:
+      - $PWD:/usr/lib/either

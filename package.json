@@ -1,5 +1,5 @@
 {
-  "name": "either",
+  "name": "@yannickdebree/either",
   "version": "0.0.0",
   "private": true,
   "main": "dist/index.js",
