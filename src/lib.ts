@@ -1,78 +1,62 @@
-export class Either<T> {
-  constructor(public readonly left: T) { }
+type EitherValue<L, R> = {
+  left?: L;
+  right?: R;
+}
 
-  static unit<U>(value: U) {
-    return new Either(value);
+export class Either<L, R> {
+  private _left: L | null = null;
+  private _right: R | null = null;
+
+  private constructor(private value: EitherValue<L, R>) {
+    if (!!value.left) {
+      this._left = value.left;
+    }
+    if (!!value.right) {
+      this._right = value.right;
+    }
   }
 
-  bind<U>(modifier: (value: T) => Either<U>) {
+  get left() {
+    return this._left;
+  }
+
+  isLeft() {
+    return !!this.left
+  }
+
+  get right() {
+    return this._right;
+  }
+
+  isRight() {
+    return !!this.right;
+  }
+
+  bind<LN, RN>(modifier: (value: EitherValue<L, R>) => Either<LN, RN>) {
+    return modifier(this.value);
+  }
+
+  onLeft<LN, RN>(modifier: (value: L) => Either<LN, RN>) {
     return modifier(this.left);
+  }
+
+  onRight<LN, RN>(modifier: (value: R) => Either<LN, RN>) {
+    return modifier(this.right);
+  }
+
+  static unit<LN, RN>(value: EitherValue<LN, RN>) {
+    return new Either(value);
   }
 }
 
+export function left<L>(left: L) {
+  return Either.unit({ left });
+}
 
+export function right<R>(right: R) {
+  return Either.unit({ right });
+}
 
-// type LeftDirection<V> = {
-//   leftValue: V;
-// };
-
-// type RightDirection<V> = {
-//   rightValue: V;
-// };
-
-// function left<V>(leftValue: V): LeftDirection<V> {
-//   return {
-//     leftValue,
-//   };
-// }
-
-// function right<V>(rightValue: V): RightDirection<V> {
-//   return {
-//     rightValue,
-//   };
-// }
-
-// type EitherRunner<L, R> = (
-//   left: (value: L) => LeftDirection<L>,
-//   right: (value: R) => RightDirection<R>
-// ) => LeftDirection<L> | RightDirection<R>
-
-// class EitherA<L, R> {
-//   public readonly left: L | null = null;
-//   public readonly right: R | null = null;
-
-//   constructor(runner: EitherRunner<L, R>) {
-//     const result = runner(left, right);
-//     if (result.hasOwnProperty('leftValue')) {
-//       this.left = (result as LeftDirection<L>).leftValue;
-//       return;
-//     }
-//     this.right = (result as RightDirection<R>).rightValue;
-//   }
-
-//   isLeft() {
-//     return !!this.left;
-//   }
-
-//   onLeft(callback: <V>(value: V) => R) {
-//     if (this.isLeft()) {
-//       callback(this.left);
-//     }
-//     return this;
-//   }
-
-//   isRight() {
-//     return !!this.right;
-//   }
-
-//   onRight(callback: <V>(value: V) => R) {
-//     if (this.isRight()) {
-//       callback(this.right);
-//     }
-//     return this;
-//   }
-// }
-
-// export function either<L, R>(runner: EitherRunner<L, R>) {
-//   return new EitherA(runner)
-// }
+export function either<L, R>(runner: () => Either<L, any> | Either<any, R>): Either<L, R> {
+  return runner() as Either<L, R>
+}
