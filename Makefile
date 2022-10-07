@@ -5,9 +5,9 @@ node_modules/time:
 	$(dr) yarn
 	touch node_modules/time
 
-.PHONY: test
-test: node_modules/time # Run tests
-	$(dr) yarn test
+.PHONY: start
+start: node_modules/time # Run tests
+	$(dr) yarn start
 
 .PHONY: build
 build: node_modules/time # Build library
