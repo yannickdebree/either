@@ -1,11 +1,13 @@
-export class Either<T> {
+class Either<T> {
   constructor(public readonly value: T) {}
+}
 
-  static unit<U>(value: U) {
-    return new Either(value);
-  }
+export function unit<U>(value: U) {
+  return new Either(value);
+}
 
-  bind<B>(modifier: (value: T) => Either<B>) {
-    return modifier(this.value);
-  }
+export function bind<A>(monad: Either<A>) {
+  return function <B>(modifier: (value: A) => Either<B>) {
+    return modifier(monad.value);
+  };
 }
