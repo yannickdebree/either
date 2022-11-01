@@ -57,6 +57,6 @@ export function right<R>(right: R) {
   return Either.unit({ right });
 }
 
-export function either<L, R>(runner: () => Either<L, any> | Either<any, R>): Either<L, R> {
+export function either<L, R>(runner: () => Either<L, unknown> | Either<unknown, R>): Either<L, R> {
   return runner() as Either<L, R>
 }

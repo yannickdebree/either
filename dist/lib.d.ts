@@ -1,18 +1,22 @@
-declare type LeftDirection<V> = {
-    leftValue: V;
+declare type EitherValue<L, R> = {
+    left?: L;
+    right?: R;
 };
-declare type RightDirection<V> = {
-    rightValue: V;
-};
-declare type EitherRunner<L, R> = (left: (value: L) => LeftDirection<L>, right: (value: R) => RightDirection<R>) => LeftDirection<L> | RightDirection<R>;
-declare class Either<L, R> {
-    readonly left: L | null;
-    readonly right: R | null;
-    constructor(runner: EitherRunner<L, R>);
+export declare class Either<L, R> {
+    private value;
+    private _left;
+    private _right;
+    private constructor();
+    get left(): L;
     isLeft(): boolean;
-    onLeft(callback: <V>(value: V) => R): this;
+    get right(): R;
     isRight(): boolean;
-    onRight(callback: <V>(value: V) => R): this;
+    bind<LN, RN>(modifier: (value: EitherValue<L, R>) => Either<LN, RN>): Either<LN, RN>;
+    onLeft<LN, RN>(modifier: (value: L) => Either<LN, RN>): Either<LN, RN>;
+    onRight<LN, RN>(modifier: (value: R) => Either<LN, RN>): Either<LN, RN>;
+    static unit<LN, RN>(value: EitherValue<LN, RN>): Either<LN, RN>;
 }
-export declare function either<L, R>(runner: EitherRunner<L, R>): Either<L, R>;
+export declare function left<L>(left: L): Either<L, unknown>;
+export declare function right<R>(right: R): Either<unknown, R>;
+export declare function either<L, R>(runner: () => Either<L, unknown> | Either<unknown, R>): Either<L, R>;
 export {};

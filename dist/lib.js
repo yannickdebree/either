@@ -1,47 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.either = void 0;
-function left(leftValue) {
-    return {
-        leftValue,
-    };
-}
-function right(rightValue) {
-    return {
-        rightValue,
-    };
-}
+exports.either = exports.right = exports.left = exports.Either = void 0;
 class Either {
-    left = null;
-    right = null;
-    constructor(runner) {
-        const result = runner(left, right);
-        if (result.hasOwnProperty('leftValue')) {
-            this.left = result.leftValue;
-            return;
+    value;
+    _left = null;
+    _right = null;
+    constructor(value) {
+        this.value = value;
+        if (!!value.left) {
+            this._left = value.left;
         }
-        this.right = result.rightValue;
+        if (!!value.right) {
+            this._right = value.right;
+        }
+    }
+    get left() {
+        return this._left;
     }
     isLeft() {
         return !!this.left;
     }
-    onLeft(callback) {
-        if (this.isLeft()) {
-            callback(this.left);
-        }
-        return this;
+    get right() {
+        return this._right;
     }
     isRight() {
         return !!this.right;
     }
-    onRight(callback) {
-        if (this.isRight()) {
-            callback(this.right);
-        }
-        return this;
+    bind(modifier) {
+        return modifier(this.value);
+    }
+    onLeft(modifier) {
+        return modifier(this.left);
+    }
+    onRight(modifier) {
+        return modifier(this.right);
+    }
+    static unit(value) {
+        return new Either(value);
     }
 }
+exports.Either = Either;
+function left(left) {
+    return Either.unit({ left });
+}
+exports.left = left;
+function right(right) {
+    return Either.unit({ right });
+}
+exports.right = right;
 function either(runner) {
-    return new Either(runner);
+    return runner();
 }
 exports.either = either;

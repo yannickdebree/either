@@ -13,3 +13,8 @@ start: node_modules/time # Run tests
 build: node_modules/time # Build library
 	$(dr) yarn build
 	
+.PHONY: publish
+publish: node_modules/time # Publish library
+	$(dr) npm login --scope=@OWNER --registry=https://npm.pkg.github.com
+	$(dr) yarn publish
+	
